@@ -1,0 +1,23 @@
+grafana:
+  adminPassword: prom-operator
+  persistence:
+    enabled: true
+    size: 10Gi
+
+prometheusOperator:
+  createCustomResource: true
+
+prometheus:
+  prometheusSpec:
+    retention: 10d
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+
+alertmanager:
+  alertmanagerSpec:
+    retention: 120h
+    
