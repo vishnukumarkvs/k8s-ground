@@ -3,12 +3,24 @@ grafana:
   persistence:
     enabled: true
     size: 10Gi
+  additionalDataSources:
+    - name: Cortex
+      type: prometheus
+      access: proxy
+      url: http://cortex-query-frontend.cortex.svc.cluster.local:9095/prometheus
+      isDefault: false
+      jsonData:
+        httpHeaderName1: "X-Scope-OrgID"
+      secureJsonData:
+        httpHeaderValue1: "anonymous"
 
 prometheusOperator:
   createCustomResource: true
 
 prometheus:
   prometheusSpec:
+    remoteWrite:
+      - url: http://cortex.cortex,svc.local:9009/api/v1/push
     retention: 10d
     resources:
       requests:

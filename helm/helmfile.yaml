@@ -1,6 +1,8 @@
 repositories:
   - name: prometheus-community
     url: https://prometheus-community.github.io/helm-charts
+  - name: cortex-helm
+    url: https://cortexproject.github.io/cortex-helm-chart
   - name: coroot
     url: https://coroot.github.io/helm-charts
 
@@ -34,3 +36,10 @@ releases:
               echo "Applying $crd"
               kubectl apply --server-side -f "$base_url/$crd"
             done
+
+  - name: cortex
+    namespace: cortex
+    createNamespace: true
+    chart: cortex-helm/cortex
+    values:
+      - values/cortex.yaml
