@@ -5,6 +5,8 @@ repositories:
     url: https://cortexproject.github.io/cortex-helm-chart
   - name: grafana
     url: https://grafana.github.io/helm-charts
+  - name: vector
+    url: https://helm.vector.dev
   - name: coroot
     url: https://coroot.github.io/helm-charts
 
@@ -58,3 +60,10 @@ releases:
     chart: grafana/loki
     values:
       - values/loki.yaml
+
+  - name: vector
+    namespace: monitoring
+    createNamespace: true
+    chart: vector/vector
+    values:
+      - values/vector.yaml

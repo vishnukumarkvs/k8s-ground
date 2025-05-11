@@ -1,0 +1,33 @@
+vector:
+  # Enable the k8s logs source (DaemonSet + RBAC)
+  config:
+    sources:
+      kubernetes_logs:
+        type: kubernetes_logs
+        # You can filter by namespace, container, labels, etc.
+        include_namespaces: ["default", "your-app-namespace"]
+
+    # Optionally parse out fields or add transforms here
+    transforms:
+      parse_json:
+        type: json_parser
+        inputs: ["kubernetes_logs"]
+        drop_malformed: true
+
+    sinks:
+      loki:
+        type: loki
+        inputs: ["parse_json"]   # or ["kubernetes_logs"] if no transform
+        endpoint: "http://loki-distributor.loki.svc.cluster.local:3100"
+        # Default HTTP path is /loki/api/v1/push
+        encoding:
+          codec: json           # Loki likes JSON-encoded events
+        labels:
+          namespace: "{{ kubernetes.namespace_name }}"
+          pod: "{{ kubernetes.pod_name }}"
+          container: "{{ kubernetes.container_name }}"
+        # You can also add Tenant ID, basic auth, etc:
+        # auth:
+        #   strategy: basic
+        #   user:    your-user
+        #   password: your-pass

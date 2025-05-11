@@ -1,4 +1,7 @@
 # https://grafana.com/docs/loki/latest/setup/install/helm/install-microservices/
+# https://github.com/grafana/helm-charts/blob/main/charts/loki-distributed/values.yaml
+
+auth_enabled: false
 
 loki:
    schemaConfig:
@@ -25,25 +28,21 @@ loki:
 deploymentMode: Distributed
 
 ingester:
-  replicas: 3 # To ensure data durability with replication
+  replicas: 1
   zoneAwareReplication:
      enabled: false
 querier:
-  replicas: 3 # Improve query performance via parallelism
-  maxUnavailable: 2
+  replicas: 1
 queryFrontend:
-  replicas: 2
-  maxUnavailable: 1
+  replicas: 1
 queryScheduler:
-  replicas: 2
+  replicas: 1
 distributor:
-  replicas: 3 
-  maxUnavailable: 2
+  replicas: 1
 compactor:
   replicas: 1
 indexGateway:
-  replicas: 2
-  maxUnavailable: 1
+  replicas: 1
 
 bloomPlanner:
   replicas: 0
