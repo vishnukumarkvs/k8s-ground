@@ -43,3 +43,9 @@ releases:
     chart: cortex-helm/cortex
     values:
       - values/cortex.yaml
+    set:
+      # Requires you to export below envs locally
+      - name: config.blocks_storage.s3.access_key_id
+        value: {{ requiredEnv "AWS_ACCESS_KEY_ID" }}
+      - name: config.blocks_storage.s3.secret_access_key
+        value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY" }}
