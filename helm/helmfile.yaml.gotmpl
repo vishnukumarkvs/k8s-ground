@@ -3,6 +3,8 @@ repositories:
     url: https://prometheus-community.github.io/helm-charts
   - name: cortex-helm
     url: https://cortexproject.github.io/cortex-helm-chart
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
   - name: coroot
     url: https://coroot.github.io/helm-charts
 
@@ -49,3 +51,10 @@ releases:
         value: {{ requiredEnv "AWS_ACCESS_KEY_ID" }}
       - name: config.blocks_storage.s3.secret_access_key
         value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY" }}
+  
+  - name: loki
+    namespace: loki
+    createNamespace: true
+    chart: grafana/loki
+    values:
+      - values/loki.yaml
