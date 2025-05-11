@@ -1,25 +1,226 @@
 image:
   repository: quay.io/cortexproject/cortex
 
+alertmanger:
+  enabled: false
+
 config:
-  alertmanger:
-    enabled: false
+  server:
+    grpc_server_max_recv_msg_size: 104857600
+    grpc_server_max_send_msg_size: 104857600 
+    grpc_server_max_concurrent_streams: 0
+  ingester:
+    instance_limits:
+      max_ingestion_rate: 40000
+    lifecycler:
+      ring:
+        replication_factor: 3
+        kvstore:
+          store: "memberlist"
+      tokens_file_path: /data/tokens
+  ingester_client:
+    grpc_client_config:
+      rate_limit: 0
+      rate_limit_burst: 0
+      grpc_compression: "gzip"
+  distributor:
+    instance_limits:	
+      max_ingestion_rate: 80000
+    shard_by_all_labels: true
+  querier:
+    max_concurrent: 100
+    timeout: 2m
+    #batch_iterators: true  --> not found anymore
+    ingester_streaming: true
+    max_samples: 100000000
+    query_ingesters_within: "6h5m"
+    #query_store_for_labels_enabled: true --> not found anymore
+    query_store_after: "6h"
+    default_evaluation_interval: 1m
+  frontend:
+    log_queries_longer_than: 1s
+  # frontend_worker:
+  #   frontend_address: cortex-query-frontend-headless:9095
+  #   match_max_concurrent: true
+  #   grpc_client_config:
+  #     grpc_compression: gzip
+  #     max_send_msg_size: 50777216
+  query_range:
+    align_queries_with_step: true
+    split_queries_by_interval: 24h
+    cache_results: true
+    results_cache:
+      cache:
+        background:
+          writeback_goroutines: 100
+          writeback_buffer: 100000
+        memcached:
+          expiration: "168h"
+        memcached_client:
+          host: cortex-query-frontend-memcached.cortex.svc.cluster.local
+          service: memcached
+          timeout: "100ms"
+          consistent_hash: true
+          max_idle_conns: 100
+  limits:
+    ingestion_burst_size: 100000
+    ingestion_rate: 80000
+    max_series_per_metric: 0
+    #max_series_per_query: 2000000  --> not found anymore
+    max_series_per_user: 0
+    max_query_length: 0
+    max_query_parallelism: 60
+    #max_query_lookback: {{ default "336h" .cortex_retention }}
+    max_cache_freshness: 1m
+    compactor_blocks_retention_period: "1y"
+    max_metadata_per_user: 0
+  storage:
+    engine: blocks
+    # aws:
+    #   dynamodb:
+    #     dynamodb_url: ${DYNAMODB_URL}
+    #   s3: ${S3_URL}
   blocks_storage:
-    backend: s3
-    s3:
-      endpoint: s3.us-east-1.amazonaws.com
-      bucket_name: cortex-kvs-1
-      access_key_id: 
-        valueFrom:
-          secretKeyRef:
-            name: cortex-s3-creds
-            key: access_key
-      secret_access_key:
-        valueFrom:
-          secretKeyRef:
-            name: cortex-s3-creds
-            key: secret_key
-    bucket_store:
-      sync_dir: "/data"
+    backend: "s3"
     tsdb:
-      dir: "/data"
+      dir: "/data/tsdb"
+      max_tsdb_opening_concurrency_on_startup: 50
+    s3:
+      endpoint: "s3.us-east-1.amazonaws.com"
+      bucket_name: "cortex-kvs-1"
+      secret_access_key: ""
+      access_key_id: ""
+    bucket_store:
+      bucket_index:
+        enabled: true
+      sync_dir: "/data/tsdb-sync"
+      index_cache:
+        backend: "memcached"
+        memcached:
+          addresses: 'dns+{{ include "cortex.fullname" $ }}-memcached-blocks-index:11211'
+          timeout: "300ms"
+          max_idle_connections: 750
+          max_async_concurrency: 100
+          max_async_buffer_size: 10000000
+          max_get_multi_concurrency: 750 
+          max_get_multi_batch_size: 1000 
+          max_item_size: 100000000
+      chunks_cache:
+        backend: "memcached"
+        memcached:
+          addresses: 'dns+{{ include "cortex.fullname" $ }}-memcached-blocks:11211'
+          timeout: "300ms"
+          max_idle_connections: 750 
+          max_async_concurrency: 100 
+          max_async_buffer_size: 10000000 
+          max_get_multi_concurrency: 750 
+          max_get_multi_batch_size: 1000 
+          max_item_size: 100000000 
+      metadata_cache:
+        backend: "memcached"
+        memcached:
+          addresses: 'dns+{{ include "cortex.fullname" $ }}-memcached-blocks-metadata:11211'
+          timeout: "300ms"
+          max_idle_connections: 750
+          max_async_concurrency: 100 
+          max_async_buffer_size: 10000000 
+          max_get_multi_concurrency:  750 
+          max_get_multi_batch_size:  1000 
+          max_item_size:  100000000
+  store_gateway:
+    sharding_enabled: true
+    sharding_ring:
+      tokens_file_path: /data/tokens
+      kvstore:
+        store: "memberlist"
+  compactor:
+    sharding_enabled: true
+    sharding_strategy: "default"
+    cleanup_interval: "15m"
+    compaction_interval: "1h"
+    sharding_ring:
+      kvstore:
+        store: "memberlist"
+  ruler:
+    evaluation_interval: "60s"
+    poll_interval: 5m
+    alertmanager_url: ""
+    notification_timeout: "40s"
+  ruler_storage:
+    backend: local
+    local:
+      directory: /tmp/cortex/rules
+  memberlist:
+    bind_port: 7946
+    join_members:
+      - cortex-memberlist
+
+
+memcached-frontend:
+  # -- Enables support for caching queries in the frontend
+  enabled: true
+  architecture: "high-availability"
+  replicaCount: 2
+  resources: {}
+  extraEnvVars:
+    # -- MEMCACHED_CACHE_SIZE is the amount of memory allocated to memcached for object storage
+    - name: MEMCACHED_CACHE_SIZE
+      value: "1024"
+    # -- MEMCACHED_MAX_CONNECTIONS is the maximum number of simultaneous connections to the memcached service
+    - name: MEMCACHED_MAX_CONNECTIONS
+      value: "1024"
+    # -- MEMCACHED_THREADS is the number of threads to use when processing incoming requests.
+    # By default, memcached is configured to use 4 concurrent threads. The threading improves the performance of
+    # storing and retrieving data in the cache, using a locking system to prevent different threads overwriting or updating the same values.
+    - name: MEMCACHED_THREADS
+      value: "4"
+  metrics:
+    enabled: true
+
+memcached-blocks-index:
+  # -- Enables support for block index caching
+  enabled: true
+  architecture: "high-availability"
+  replicaCount: 2
+  resources: {}
+  extraEnvVars:
+    - name: MEMCACHED_CACHE_SIZE
+      value: "1024"
+    - name: MEMCACHED_MAX_CONNECTIONS
+      value: "1024"
+    - name: MEMCACHED_THREADS
+      value: "4"
+  metrics:
+    enabled: true
+
+memcached-blocks:
+  # -- Enables support for block caching
+  enabled: true
+  architecture: "high-availability"
+  replicaCount: 2
+  resources: {}
+  extraEnvVars:
+    - name: MEMCACHED_CACHE_SIZE
+      value: "1024"
+    - name: MEMCACHED_MAX_CONNECTIONS
+      value: "1024"
+    - name: MEMCACHED_THREADS
+      value: "4"
+  metrics:
+    enabled: true
+
+memcached-blocks-metadata:
+  # -- Enables support for block metadata caching
+  enabled: true
+  architecture: "high-availability"
+  replicaCount: 2
+  resources: {}
+  extraEnvVars:
+    - name: MEMCACHED_CACHE_SIZE
+      value: "1024"
+    - name: MEMCACHED_MAX_CONNECTIONS
+      value: "1024"
+    - name: MEMCACHED_THREADS
+      value: "4"
+  metrics:
+    enabled: true
