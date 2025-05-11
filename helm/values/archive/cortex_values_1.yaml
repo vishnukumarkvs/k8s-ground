@@ -148,7 +148,7 @@ config:
   ruler:
     evaluation_interval: "60s"
     poll_interval: 5m
-    alertmanager_url: "http://alertmanager.gc01.int.ves.io:31987"
+    alertmanager_url: "http://alertmanager.monitoring.svc.local:31987"
     notification_timeout: "40s"
   ruler_storage:
     backend: local
