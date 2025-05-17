@@ -154,13 +154,14 @@ config:
     join_members:
       - cortex-memberlist
 
+# Single distributor cant work with prom remote_write
 distributor:
   enabled: true
-  replicas: 1
+  replicas: 2
 
 ingester:
   enabled: true
-  replicas: 1
+  replicas: 3
 
 ruler:
   enabled: false

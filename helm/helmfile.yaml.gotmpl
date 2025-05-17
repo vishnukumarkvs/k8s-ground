@@ -53,17 +53,23 @@ releases:
         value: {{ requiredEnv "AWS_ACCESS_KEY_ID" }}
       - name: config.blocks_storage.s3.secret_access_key
         value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY" }}
-  
-  - name: loki
-    namespace: loki
-    createNamespace: true
-    chart: grafana/loki
-    values:
-      - values/loki.yaml
 
-  - name: vector
-    namespace: monitoring
-    createNamespace: true
-    chart: vector/vector
-    values:
-      - values/vector.yaml
+  # kube-prometheus-stack already has ksm
+  # - name: kube-state-metrics
+  #  namespace: monitoring
+  #  createNamespace: true
+  #  chart: prometheus-community/kube-state-metrics
+
+  # - name: loki
+  #   namespace: loki
+  #   createNamespace: true
+  #   chart: grafana/loki
+  #   values:
+  #     - values/loki.yaml
+
+  # - name: vector
+  #   namespace: monitoring
+  #   createNamespace: true
+  #   chart: vector/vector
+  #   values:
+  #     - values/vector.yaml

@@ -13,13 +13,13 @@ grafana:
         httpHeaderName1: "X-Scope-OrgID"
       secureJsonData:
         httpHeaderValue1: "anonymous"
-    - name: Loki
-      type: loki
-      access: proxy
-      url: http://loki-query-frontend.loki.svc.cluster.local:3100
-      isDefault: false
-      jsonData:
-        maxLines: 1000       # optional: increases the number of lines per query result
+    # - name: Loki
+    #   type: loki
+    #   access: proxy
+    #   url: http://loki-query-frontend.loki.svc.cluster.local:3100
+    #   isDefault: false
+    #   jsonData:
+    #     maxLines: 1000       # optional: increases the number of lines per query result
       
 prometheusOperator:
   createCustomResource: true
