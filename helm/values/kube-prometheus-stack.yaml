@@ -35,6 +35,16 @@ prometheus:
         cpu: 500m
       limits:
         memory: 2Gi
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector:
+      matchExpressions:
+        - key: name
+          operator: In
+          values:
+            - monitoring
+            - kube-system
+            - cortex
+            - default
 
 alertmanager:
   alertmanagerSpec:

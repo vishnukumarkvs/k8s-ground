@@ -158,10 +158,14 @@ config:
 distributor:
   enabled: true
   replicas: 2
+  serviceMonitor:
+    enabled: true
 
 ingester:
   enabled: true
   replicas: 3
+  serviceMonitor:
+    enabled: true
 
 ruler:
   enabled: false
@@ -172,10 +176,20 @@ alertmanager:
 querier:
   enabled: true
   replicas: 1
+  serviceMonitor:
+    enabled: true
 
 query_frontend:
   enabled: true
   replicas: 1
+  serviceMonitor:
+    enabled: true
+
+compactor:
+  enabled: true
+  replicas: 1
+  serviceMonitor:
+    enabled: true
 
 memcached-frontend:
   # -- Enables support for caching queries in the frontend
@@ -196,6 +210,8 @@ memcached-frontend:
     - name: MEMCACHED_THREADS
       value: "4"
   metrics:
+    enabled: true
+  serviceMonitor:
     enabled: true
 
 memcached-blocks-index:
@@ -229,6 +245,8 @@ memcached-blocks:
       value: "4"
   metrics:
     enabled: true
+  serviceMonitor:
+    enabled: true
 
 memcached-blocks-metadata:
   # -- Enables support for block metadata caching
@@ -244,4 +262,6 @@ memcached-blocks-metadata:
     - name: MEMCACHED_THREADS
       value: "4"
   metrics:
+    enabled: true
+  serviceMonitor:
     enabled: true
