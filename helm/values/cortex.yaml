@@ -164,6 +164,10 @@ distributor:
 ingester:
   enabled: true
   replicas: 3
+  statefulSet:
+    # -- If true, use a statefulset instead of a deployment for pod management.
+    # This is useful when using WAL
+    enabled: true
   serviceMonitor:
     enabled: true
 
