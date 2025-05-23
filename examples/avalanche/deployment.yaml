@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avalanche
+  labels:
+    app: avalanche
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: avalanche
+  template:
+    metadata:
+      labels:
+        app: avalanche
+    spec:
+      containers:
+      - name: avalanche
+        image: quay.io/prometheuscommunity/avalanche:latest
+        args:
+          - "-metric.count=100000"  # Set the number of metrics to generate.
+          - "-series.count=100"     # Set the number of series per metric.
+          - "-remote.url=http://cortex-distributor.cortex.svc.cluster.local:8080/api/v1/push"
+          - "-labelcount=10"        # Number of labels per series.
+          - "-labels=env=prod,team=devops,region=us-west,from=avalanche"  # Custom labels to add.
+        ports:
+        - containerPort: 9090

@@ -1,0 +1,10 @@
+
+# helm show values prometheus-community/prometheus-yet-another-cloudwatch-exporter
+  
+serviceMonitor:
+  enabled: true
+
+# Supports aws role as well as aws secret
+aws:
+  aws_access_key_id: ""
+  aws_secret_access_key: ""

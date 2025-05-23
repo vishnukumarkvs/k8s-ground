@@ -54,6 +54,18 @@ releases:
       - name: config.blocks_storage.s3.secret_access_key
         value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY" }}
 
+  - name: yacm
+    namespace: monitoring
+    chart: prometheus-community/prometheus-yet-another-cloudwatch-exporter
+    values:
+      - values/yacm.yaml
+    set:
+      - name: aws.aws_access_key_id
+        value: {{ requiredEnv "AWS_ACCESS_KEY_ID" }}
+      - name: aws.aws_secret_access_key
+        value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY"}}
+
+  
   # kube-prometheus-stack already has ksm
   # - name: kube-state-metrics
   #  namespace: monitoring
