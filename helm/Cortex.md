@@ -60,3 +60,35 @@ Memberlist doesn’t recognize or need the prefix field because it doesn’t use
 
 memcache issue
 https://github.com/cortexproject/cortex-helm-chart/issues/346
+
+
+comapction_strategy vs sharding_strategy
+
+sharding_strategy:
+- run compactions on multiple compactor instances. Just scaling to 2 compactors wont work as both will try to comapct same block if in default mode
+- shuffle sharding deduplicaates so only one compactor insttance will compcat particular block at at time
+
+compaction_strategy:
+- default jsut compacts based  on time range which is 2h , 6h, 12h etc
+- partition strategy uses compaction by labels instead of just time range
+
+https://cortexmetrics.io/docs/proposals/timeseries-partitioning-in-compactor/#partitioning-strategy
+
+
+# Data
+
+## Ingester
+
+k exec -it cortex-ingester-0 -- du -sh /data/tsdb/fake/wal
+
+### T1
+- 90K - 500Mb wal size
+- wal replay : total_replay_duration=1.669341042s
+- approx 3 mins for ingester shutdown
+- uptime is around 50s
+
+### T2 (with snappy and flush)
+- 90K - 380Mb wal size - slight improvement
+-  total_replay_duration=777.037093ms
+- 4 mins to deletye ingester
+- uptime 40s

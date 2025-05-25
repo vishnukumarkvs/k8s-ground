@@ -26,6 +26,8 @@ prometheusOperator:
 
 prometheus:
   prometheusSpec:
+    externalLabels:
+      cluster: "kind-local"
     remoteWrite:
       - url: http://cortex-distributor.cortex.svc.cluster.local:8080/api/v1/push
     retention: 10d

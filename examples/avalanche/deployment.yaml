@@ -1,14 +1,23 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: avalanche
+spec:
+  finalizers:
+  - kubernetes
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: avalanche
+  namespace: avalanche
   labels:
-    app: avalanche
+    name: avalanche
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: avalanche
+  replicas: 1
   template:
     metadata:
       labels:
@@ -18,10 +27,19 @@ spec:
       - name: avalanche
         image: quay.io/prometheuscommunity/avalanche:latest
         args:
-          - "-metric.count=100000"  # Set the number of metrics to generate.
-          - "-series.count=100"     # Set the number of series per metric.
-          - "-remote.url=http://cortex-distributor.cortex.svc.cluster.local:8080/api/v1/push"
-          - "-labelcount=10"        # Number of labels per series.
-          - "-labels=env=prod,team=devops,region=us-west,from=avalanche"  # Custom labels to add.
+        # Example metric distribution. See cmd/mtypes on how to generate different distributions
+        # based on real scrape targets.
+        - "--gauge-metric-count=16"
+        - "--counter-metric-count=28"
+        - "--histogram-metric-count=2"
+        - "--histogram-metric-bucket-count=10" # Does not count +Inf
+        - "--native-histogram-metric-count=0"
+        - "--summary-metric-count=5" # One metric gives 2 series.
+        - "--summary-metric-objective-count=2" # One metric gives 2 series.
+        - "--series-count=10"
+        - "--value-interval=300" # Changes values every 5m
+        - "--series-interval=3600" # 1h series churn.
+        - "--metric-interval=0"
+        - "--port=9001"
         ports:
-        - containerPort: 9090
+        - containerPort: 9001

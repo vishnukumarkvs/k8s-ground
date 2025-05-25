@@ -1,0 +1,20 @@
+---
+#create service avalanche-svc
+apiVersion: v1
+kind: Service
+metadata:
+  name: avalanche-svc
+  namespace: avalanche
+  labels:
+    app: avalanche
+spec:
+  ports:
+  # the port that this service should serve on
+  - port: 9001
+    targetPort: 9001
+    name: http-avalanche
+  type: ClusterIP
+  clusterIP: None
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    app: avalanche

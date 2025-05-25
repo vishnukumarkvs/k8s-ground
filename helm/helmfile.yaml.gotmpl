@@ -65,7 +65,13 @@ releases:
       - name: aws.aws_secret_access_key
         value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY"}}
 
-  
+  - name: avalanche-generator
+    namespace: monitoring
+    chart: ./avalanche
+    values:
+      - values/avalanche.yaml
+
+
   # kube-prometheus-stack already has ksm
   # - name: kube-state-metrics
   #  namespace: monitoring

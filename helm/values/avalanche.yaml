@@ -1,0 +1,20 @@
+metrics:
+  gaugeCount: 16
+  counterCount: 28
+  histogramCount: 2
+  histogramBuckets: 10
+  nativeHistogramCount: 0
+  summaryCount: 5
+  summaryObjectives: 2
+  seriesCount: 1000
+  valueInterval: 300
+  seriesInterval: 3600
+  metricInterval: 0
+
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "2Gi"
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"

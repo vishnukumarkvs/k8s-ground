@@ -10,7 +10,7 @@ config:
     grpc_server_max_concurrent_streams: 0
   ingester:
     instance_limits:
-      max_ingestion_rate: 40000
+      max_ingestion_rate: 400000
     lifecycler:
       ring:
         replication_factor: 3
@@ -24,7 +24,7 @@ config:
       grpc_compression: "gzip"
   distributor:
     instance_limits:	
-      max_ingestion_rate: 80000
+      max_ingestion_rate: 800000
     shard_by_all_labels: true
   querier:
     max_concurrent: 100
@@ -63,7 +63,7 @@ config:
           max_idle_conns: 100
   limits:
     ingestion_burst_size: 100000
-    ingestion_rate: 80000
+    ingestion_rate: 800000
     max_series_per_metric: 0
     #max_series_per_query: 2000000  --> not found anymore
     max_series_per_user: 0
@@ -84,6 +84,8 @@ config:
     tsdb:
       dir: "/data/tsdb"
       max_tsdb_opening_concurrency_on_startup: 50
+      flush_blocks_on_shutdown: true
+      wal_compression_type: "snappy"
     s3:
       endpoint: "s3.us-east-1.amazonaws.com"
       bucket_name: "cortex-kvs-1"

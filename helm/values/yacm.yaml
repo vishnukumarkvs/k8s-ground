@@ -8,3 +8,31 @@ serviceMonitor:
 aws:
   aws_access_key_id: ""
   aws_secret_access_key: ""
+
+
+config: |-
+  apiVersion: v1alpha1
+  sts-region: eu-west-1
+  discovery:
+    # exportedTagsOnMetrics:
+    #  AWS/S3:
+    #    - Name
+    jobs:
+    - type: AWS/S3
+      regions:
+        - us-east-1
+      # scarpe from buclets with below tag
+      # searchTags:
+      #  - key: Environment
+      #    value: .*
+      metrics:
+        - name: NumberOfObjects
+          statistics:
+            - Average
+          period: 3600
+          length: 86400
+        - name: BucketSizeBytes
+          statistics:
+            - Average
+          period: 3600
+          length: 86400

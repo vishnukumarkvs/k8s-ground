@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avalanche
+  labels:
+    app: avalanche
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: avalanche
+  template:
+    metadata:
+      labels:
+        app: avalanche
+    spec:
+      containers:
+      - name: avalanche
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        args:
+          - "--gauge-metric-count={{ .Values.metrics.gaugeCount }}"
+          - "--counter-metric-count={{ .Values.metrics.counterCount }}"
+          - "--histogram-metric-count={{ .Values.metrics.histogramCount }}"
+          - "--histogram-metric-bucket-count={{ .Values.metrics.histogramBuckets }}"
+          - "--native-histogram-metric-count={{ .Values.metrics.nativeHistogramCount }}"
+          - "--summary-metric-count={{ .Values.metrics.summaryCount }}"
+          - "--summary-metric-objective-count={{ .Values.metrics.summaryObjectives }}"
+          - "--series-count={{ .Values.metrics.seriesCount }}"
+          - "--value-interval={{ .Values.metrics.valueInterval }}"
+          - "--series-interval={{ .Values.metrics.seriesInterval }}"
+          - "--metric-interval={{ .Values.metrics.metricInterval }}"
+          - "--port={{ .Values.service.port }}"
+          - "--remote-url={{ .Values.remoteWriteUrl }}"
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
