@@ -1,0 +1,25 @@
+
+config:
+  data:
+    discovery:
+      services:
+        - k8s_namespace: cortex
+        - k8s_namespace: monitoring
+    ## to enable network metrics
+    network:
+      enable: true
+    prometheus_export:
+      port: 8999
+
+# for beyla internal metrics
+service:
+  enabled: true
+
+serviceMonitor:
+  enabled: true
+
+# export application metrics via prometheus
+#podAnnotations:
+#  prometheus.io/scrape: "true"
+#  prometheus.io/path: "/metrics"
+#  prometheus.io/port: "9494"

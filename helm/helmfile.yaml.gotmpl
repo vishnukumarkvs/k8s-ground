@@ -10,6 +10,12 @@ repositories:
   - name: coroot
     url: https://coroot.github.io/helm-charts
 
+hooks:
+  - events: ["prepare"]
+    showlogs: true
+    command: "sh"
+    args: ["-c", "kustomize build ./dashboards | kubectl apply --server-side -f -"]
+
 releases:
   - name: kube-prometheus-stack
     namespace: monitoring
@@ -71,6 +77,12 @@ releases:
     values:
       - values/avalanche.yaml
 
+  # grfana bela : ebpf based auto instrumentation tool
+  - name: beyla
+    namespace: monitoring
+    chart: grafana/beyla
+    values:
+      - values/beyla.yaml
 
   # kube-prometheus-stack already has ksm
   # - name: kube-state-metrics

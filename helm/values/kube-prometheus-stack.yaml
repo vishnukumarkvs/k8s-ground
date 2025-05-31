@@ -20,14 +20,23 @@ grafana:
     #   isDefault: false
     #   jsonData:
     #     maxLines: 1000       # optional: increases the number of lines per query result
-      
+
 prometheusOperator:
   createCustomResource: true
 
 prometheus:
   prometheusSpec:
+    scrapeClasses:  # https://github.com/prometheus-community/helm-charts/issues/4961#issuecomment-2732503634
+      - default: true
+        name: cluster-relabeling
+        relabelings:
+          - sourceLabels: [ __name__ ]
+            regex: (.*)
+            targetLabel: cluster
+            replacement: kind-local
+            action: replace
     externalLabels:
-      cluster: "kind-local"
+      cluster_name: "kind-local"
     remoteWrite:
       - url: http://cortex-distributor.cortex.svc.cluster.local:8080/api/v1/push
         headers:

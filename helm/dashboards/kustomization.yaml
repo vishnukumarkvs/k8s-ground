@@ -1,0 +1,27 @@
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+
+# Generate one ConfigMap per JSON file
+configMapGenerator:
+- name: grafana-dashboard-
+  files: # no glob support, so we list files explicitly -- https://github.com/kubernetes-sigs/kustomize/issues/189#issuecomment-409042317
+    - beyla_red_1.json
+    - cortex/cortex-compactor.json
+    - cortex/cortex-compactor-resources.json
+    - cortex/cortex-config.json
+    - cortex/cortex-reads.json
+    - cortex/cortex-object-store.json
+    - cortex/cortex-queries.json
+    - cortex/cortex-scaling.json
+    - cortex/cortex-writes.json
+    - cortex/cortex-slow-queries.json
+    - cortex/cortex-rollout-progress.json
+
+  options:
+    labels:
+      grafana_dashboard: "1"
+
+generatorOptions:
+  disableNameSuffixHash: false
