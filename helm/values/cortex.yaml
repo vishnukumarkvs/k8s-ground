@@ -4,6 +4,8 @@ image:
   repository: quay.io/cortexproject/cortex
 
 config:
+  # for multi-tenant support. Configure X-Scope-OrgId in prometheus remote_write
+  auth_enabled: true
   server:
     grpc_server_max_recv_msg_size: 104857600
     grpc_server_max_send_msg_size: 104857600 

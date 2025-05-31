@@ -92,3 +92,23 @@ k exec -it cortex-ingester-0 -- du -sh /data/tsdb/fake/wal
 -  total_replay_duration=777.037093ms
 - 4 mins to deletye ingester
 - uptime 40s
+
+
+# Multi tenant
+- In cortex config, `auth_enabled: true`
+- In prometheus remote_write , `X-Scope-OrgID` gives tenantID
+```
+    remoteWrite:
+      - url: http://cortex-distributor.cortex.svc.cluster.local:8080/api/v1/push
+        headers:
+          X-Scope-OrgID: kind-local
+```
+
+To verify
+
+- `sum(cortex_ingester_active_series) by (user)`
+- Not all metrics support user label
+- You can also berify in S3
+
+
+Every tenant has a subfolder in s3. every tenant has its own bucket_index
