@@ -89,11 +89,10 @@ config:
       flush_blocks_on_shutdown: true
       wal_compression_type: "snappy"
     s3:
-      endpoint: "minio.minio.svc.cluster.local:9000"
-      bucket_name: "cortex"
-      secret_access_key: "minioadmin"
-      access_key_id: "admin"
-      insecure: true
+      endpoint: "s3.us-east-1.amazonaws.com"
+      bucket_name: "cortex-kvs-1"
+      secret_access_key: ""
+      access_key_id: ""
     bucket_store:
       bucket_index:
         enabled: true

@@ -9,7 +9,10 @@ repositories:
     url: https://helm.vector.dev
   - name: coroot
     url: https://coroot.github.io/helm-charts
-
+  - name: seaweedfs
+    url: https://seaweedfs.github.io/seaweedfs/helm
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
 hooks:
   - events: ["prepare"]
     showlogs: true
@@ -53,15 +56,17 @@ releases:
     chart: cortex-helm/cortex
     values:
       - values/cortex.yaml
-    set:
-      # Requires you to export below envs locally
-      - name: config.blocks_storage.s3.access_key_id
-        value: {{ requiredEnv "AWS_ACCESS_KEY_ID" }}
-      - name: config.blocks_storage.s3.secret_access_key
-        value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY" }}
+
+  - name: minio
+    namespace: minio
+    createNamespace: true
+    chart: bitnami/minio
+    values:
+      - values/minio-bitnami.yaml
 
   - name: yacm
     namespace: monitoring
+    createNamespace: true
     chart: prometheus-community/prometheus-yet-another-cloudwatch-exporter
     values:
       - values/yacm.yaml
@@ -103,3 +108,10 @@ releases:
   #   chart: vector/vector
   #   values:
   #     - values/vector.yaml
+
+#  - name: seaweedfs
+#    namespace: seaweedfs
+#    createNamespace: true
+#    chart: seaweedfs/seaweedfs
+#    values:
+#      - values/seaweedfs.yaml

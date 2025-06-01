@@ -1,0 +1,10 @@
+auth:
+  rootUser: admin
+  rootPassword: "minioadmin"
+
+defaultBuckets: "cortex"
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true

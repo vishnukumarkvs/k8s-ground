@@ -112,3 +112,33 @@ To verify
 
 
 Every tenant has a subfolder in s3. every tenant has its own bucket_index
+
+
+# Helm
+
+### Release
+
+```
+  - name: cortex
+    namespace: cortex
+    createNamespace: true
+    chart: cortex-helm/cortex
+    values:
+      - values/cortex.yaml
+    set:
+      # Requires you to export below envs locally
+      - name: config.blocks_storage.s3.access_key_id
+        value: {{ requiredEnv "AWS_ACCESS_KEY_ID" }}
+      - name: config.blocks_storage.s3.secret_access_key
+        value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY" }}
+```
+
+### Value
+
+```
+    s3:
+      endpoint: "s3.us-east-1.amazonaws.com"
+      bucket_name: "cortex-kvs-1"
+      secret_access_key: ""
+      access_key_id: ""
+```

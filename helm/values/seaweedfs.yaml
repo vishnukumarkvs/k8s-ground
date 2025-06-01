@@ -1,0 +1,32 @@
+# Default values for SeaweedFS Helm chart
+
+master:
+  replicas: 1
+  persistence:
+    enabled: false
+  affinity: ""
+  tolerations:
+
+volume:
+  replicas: 1
+  persistence:
+    enabled: false
+  affinity: ""
+  tolerations:
+
+filer:
+  replicas: 1
+  persistence:
+    enabled: false
+  affinity: ""
+  tolerations:
+
+s3:
+  enabled: true
+  port: 8333
+  # You can set accessKey and secretKey here or use Kubernetes secrets
+  # accessKey: "seaweedfs"
+  # secretKey: "seaweedfs"
+  persistence:
+    enabled: false
+

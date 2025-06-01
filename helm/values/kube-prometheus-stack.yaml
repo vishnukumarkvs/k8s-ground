@@ -58,7 +58,7 @@ prometheus:
             - kube-system
             - cortex
             - default
-
+            - minio
 alertmanager:
   alertmanagerSpec:
     retention: 120h
