@@ -20,76 +20,76 @@ hooks:
     args: ["-c", "kustomize build ./dashboards | kubectl apply --server-side -f -"]
 
 releases:
-  - name: kube-prometheus-stack
-    namespace: monitoring
-    createNamespace: true
-    chart: prometheus-community/kube-prometheus-stack
-    values:
-      - values/kube-prometheus-stack.yaml
-    hooks:
-      - name: install-prom-crds
-        events: ["prepare"]
-        showlogs: true
-        command: sh
-        args:
-          - -c
-          - |
-            base_url="https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd-full"
-            crds=(
-              "monitoring.coreos.com_alertmanagerconfigs.yaml"
-              "monitoring.coreos.com_alertmanagers.yaml"
-              "monitoring.coreos.com_podmonitors.yaml"
-              "monitoring.coreos.com_probes.yaml"
-              "monitoring.coreos.com_prometheuses.yaml"
-              "monitoring.coreos.com_prometheusrules.yaml"
-              "monitoring.coreos.com_servicemonitors.yaml"
-              "monitoring.coreos.com_thanosrulers.yaml"
-            )
-            for crd in "${crds[@]}"; do
-              echo "Applying $crd"
-              kubectl apply --server-side -f "$base_url/$crd"
-            done
+  # - name: kube-prometheus-stack
+  #   namespace: monitoring
+  #   createNamespace: true
+  #   chart: prometheus-community/kube-prometheus-stack
+  #   values:
+  #     - values/kube-prometheus-stack.yaml
+  #   hooks:
+  #     - name: install-prom-crds
+  #       events: ["prepare"]
+  #       showlogs: true
+  #       command: sh
+  #       args:
+  #         - -c
+  #         - |
+  #           base_url="https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd-full"
+  #           crds=(
+  #             "monitoring.coreos.com_alertmanagerconfigs.yaml"
+  #             "monitoring.coreos.com_alertmanagers.yaml"
+  #             "monitoring.coreos.com_podmonitors.yaml"
+  #             "monitoring.coreos.com_probes.yaml"
+  #             "monitoring.coreos.com_prometheuses.yaml"
+  #             "monitoring.coreos.com_prometheusrules.yaml"
+  #             "monitoring.coreos.com_servicemonitors.yaml"
+  #             "monitoring.coreos.com_thanosrulers.yaml"
+  #           )
+  #           for crd in "${crds[@]}"; do
+  #             echo "Applying $crd"
+  #             kubectl apply --server-side -f "$base_url/$crd"
+  #           done
 
-  - name: cortex
-    namespace: cortex
-    createNamespace: true
-    chart: cortex-helm/cortex
-    values:
-      - values/cortex.yaml
+  # - name: cortex
+  #   namespace: cortex
+  #   createNamespace: true
+  #   chart: cortex-helm/cortex
+  #   values:
+  #     - values/cortex.yaml
 
-  - name: minio
-    namespace: minio
-    createNamespace: true
-    chart: bitnami/minio
-    values:
-      - values/minio-bitnami.yaml
+  # - name: minio
+  #   namespace: minio
+  #   createNamespace: true
+  #   chart: bitnami/minio
+  #   values:
+  #     - values/minio-bitnami.yaml
 
-  - name: yacm
-    namespace: monitoring
-    createNamespace: true
-    chart: prometheus-community/prometheus-yet-another-cloudwatch-exporter
-    values:
-      - values/yacm.yaml
-    set:
-      - name: aws.aws_access_key_id
-        value: {{ requiredEnv "AWS_ACCESS_KEY_ID" }}
-      - name: aws.aws_secret_access_key
-        value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY"}}
+  # - name: yacm
+  #   namespace: monitoring
+  #   createNamespace: true
+  #   chart: prometheus-community/prometheus-yet-another-cloudwatch-exporter
+  #   values:
+  #     - values/yacm.yaml
+  #   set:
+  #     - name: aws.aws_access_key_id
+  #       value: {{ requiredEnv "AWS_ACCESS_KEY_ID" }}
+  #     - name: aws.aws_secret_access_key
+  #       value: {{ requiredEnv "AWS_SECRET_ACCESS_KEY"}}
 
-  - name: avalanche-generator
-    namespace: monitoring
-    chart: ./avalanche
-    values:
-      - values/avalanche.yaml
+  # - name: avalanche-generator
+  #   namespace: monitoring
+  #   chart: ./avalanche
+  #   values:
+  #     - values/avalanche.yaml
 
-  # grfana bela : ebpf based auto instrumentation tool
-  - name: beyla
-    namespace: monitoring
-    chart: grafana/beyla
-    values:
-      - values/beyla.yaml
+  # # grfana bela : ebpf based auto instrumentation tool
+  # - name: beyla
+  #   namespace: monitoring
+  #   chart: grafana/beyla
+  #   values:
+  #     - values/beyla.yaml
 
-  # kube-prometheus-stack already has ksm
+  # # kube-prometheus-stack already has ksm
   # - name: kube-state-metrics
   #  namespace: monitoring
   #  createNamespace: true
@@ -109,9 +109,16 @@ releases:
   #   values:
   #     - values/vector.yaml
 
-#  - name: seaweedfs
-#    namespace: seaweedfs
-#    createNamespace: true
-#    chart: seaweedfs/seaweedfs
-#    values:
-#      - values/seaweedfs.yaml
+  # - name: seaweedfs
+  #   namespace: seaweedfs
+  #   createNamespace: true
+  #   chart: seaweedfs/seaweedfs
+  #   values:
+  #     - values/seaweedfs.yaml
+
+  - name: keycloak
+    namespace: keycloak
+    createNamespace: true
+    chart: bitnami/keycloak
+    values:
+      - values/keycloak.yaml
