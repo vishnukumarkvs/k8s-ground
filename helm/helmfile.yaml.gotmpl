@@ -20,42 +20,42 @@ hooks:
     args: ["-c", "kustomize build ./dashboards | kubectl apply --server-side -f -"]
 
 releases:
-  # - name: kube-prometheus-stack
-  #   namespace: monitoring
-  #   createNamespace: true
-  #   chart: prometheus-community/kube-prometheus-stack
-  #   values:
-  #     - values/kube-prometheus-stack.yaml
-  #   hooks:
-  #     - name: install-prom-crds
-  #       events: ["prepare"]
-  #       showlogs: true
-  #       command: sh
-  #       args:
-  #         - -c
-  #         - |
-  #           base_url="https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd-full"
-  #           crds=(
-  #             "monitoring.coreos.com_alertmanagerconfigs.yaml"
-  #             "monitoring.coreos.com_alertmanagers.yaml"
-  #             "monitoring.coreos.com_podmonitors.yaml"
-  #             "monitoring.coreos.com_probes.yaml"
-  #             "monitoring.coreos.com_prometheuses.yaml"
-  #             "monitoring.coreos.com_prometheusrules.yaml"
-  #             "monitoring.coreos.com_servicemonitors.yaml"
-  #             "monitoring.coreos.com_thanosrulers.yaml"
-  #           )
-  #           for crd in "${crds[@]}"; do
-  #             echo "Applying $crd"
-  #             kubectl apply --server-side -f "$base_url/$crd"
-  #           done
+  - name: kube-prometheus-stack
+    namespace: monitoring
+    createNamespace: true
+    chart: prometheus-community/kube-prometheus-stack
+    values:
+      - values/kube-prometheus-stack.yaml
+    hooks:
+      - name: install-prom-crds
+        events: ["prepare"]
+        showlogs: true
+        command: sh
+        args:
+          - -c
+          - |
+            base_url="https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd-full"
+            crds=(
+              "monitoring.coreos.com_alertmanagerconfigs.yaml"
+              "monitoring.coreos.com_alertmanagers.yaml"
+              "monitoring.coreos.com_podmonitors.yaml"
+              "monitoring.coreos.com_probes.yaml"
+              "monitoring.coreos.com_prometheuses.yaml"
+              "monitoring.coreos.com_prometheusrules.yaml"
+              "monitoring.coreos.com_servicemonitors.yaml"
+              "monitoring.coreos.com_thanosrulers.yaml"
+            )
+            for crd in "${crds[@]}"; do
+              echo "Applying $crd"
+              kubectl apply --server-side -f "$base_url/$crd"
+            done
 
-  # - name: cortex
-  #   namespace: cortex
-  #   createNamespace: true
-  #   chart: cortex-helm/cortex
-  #   values:
-  #     - values/cortex.yaml
+  - name: cortex
+    namespace: cortex
+    createNamespace: true
+    chart: cortex-helm/cortex
+    values:
+      - values/cortex.yaml
 
   # - name: minio
   #   namespace: minio

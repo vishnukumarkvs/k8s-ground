@@ -44,4 +44,14 @@ Coroot is a CNCF incubating project which gives observability on netweorking sta
 
 Its a grafana projected which used eBPF tech to provide RED metrics. It also provides exemplars which are comnination of metrics and logs on time based foramt
 
+# Grafana Foundation SDK
+
+The Grafana Foundation SDK allows you to define Grafana resources using common programming languages like Go, TypeScript, and Python. This has several advantages over using Jsonnet:
+
+*   **Familiar Programming Languages**: Developers can use their existing skills and tools without needing to learn the domain-specific language, Jsonnet.
+*   **Strong Typing and Compile-Time Error Checking**: The SDK provides strongly-typed builders for creating dashboards and other resources. This allows you to catch errors during compilation, leading to more reliable and robust configurations.
+*   **Enhanced Developer Workflow and Tooling**: By using a general-purpose programming language, you can integrate dashboard generation seamlessly into your existing development workflows. This includes better support for IDEs, debuggers, and other standard development tools.
+*   **Official Support and Maintenance**: The Grafana Foundation SDK is generated from OpenAPI documents in the Grafana repository, ensuring that it stays up-to-date with new Grafana features.
+*   **Extensibility**: The SDK is designed to be extensible, allowing you to define custom types for panels and data sources, which is useful for third-party or private plugins.
+
 
