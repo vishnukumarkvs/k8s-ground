@@ -1,0 +1,15 @@
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPC
+metadata:
+  labels:
+    eks-type: play
+    env: play
+  name: kvs-eks-play-vpc-1
+spec:
+  forProvider:
+    cidrBlock: 10.1.0.0/16
+    region: us-east-1
+    enableDnsHostnames: true
+    enableDnsSupport: true
+    tags:
+      Name: eks-play-vpc

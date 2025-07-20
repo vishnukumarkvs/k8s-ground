@@ -1,0 +1,18 @@
+apiVersion: s3.aws.upbound.io/v1beta2
+kind: Bucket
+metadata:
+  annotations:
+    eks-type: play
+    aws-type: s3
+  labels:
+    eks-type: play
+    env: play
+  name: kvs-eks-play-bucket-1
+spec:
+  providerConfigRef:
+    name: default
+  forProvider:
+    objectLockEnabled: true
+    region: us-east-1
+    tags:
+      Name: PlayEKSBucket

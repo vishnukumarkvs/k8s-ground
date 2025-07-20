@@ -1,0 +1,15 @@
+apiVersion: s3.aws.upbound.io/v1beta2
+kind: BucketVersioning
+metadata:
+  name: eks-play-s3-versioning-1
+spec:
+  forProvider:
+    bucketSelector:
+      matchLabels:
+        eks-type: play
+    region: us-east-1
+    versioningConfiguration:
+      status: Enabled
+
+# Or you can give direct bucket name  instead of match selector
+# bucket: <name>

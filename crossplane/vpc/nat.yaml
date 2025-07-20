@@ -1,0 +1,27 @@
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: EIP
+metadata:
+  name: kvs-play-nat-1
+spec:
+  forProvider:
+    region: us-east-1
+    vpc: true
+    tags:
+      Name: kvs-play-nat-1
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: NATGateway
+metadata:
+  name: kvs-play-nat-1
+spec:
+  forProvider:
+    region: us-east-1
+    connectivityType: public
+    allocationIdRef: # EIP to use for the NAT Gateway
+      name: kvs-play-nat-1
+    subnetIdSelector:
+      matchLabels:
+        name: kvs-play-public-us-east-1a
+    tags:
+      Name: kvs-play-nat-1
